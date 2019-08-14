@@ -64,3 +64,12 @@ Currently the only dependency is Solr, since we have copy-pasted relevant parts 
 
 * Solr 8.1.1
 
+### Citing
+
+If you need to cite this software in your own work, please use the following DOI.
+
+Pal, Sujit (2015), Elsevier Labs. Anserini Solr Plugin [Computer Software]; [https://github.com/elsevierlabs-os/anserini-solr-plugin](https://github.com/elsevierlabs-os/anserini-solr-plugin).
+
+
+[![DOI](https://zenodo.org/badge/202418267.svg)](https://zenodo.org/badge/latestdoi/202418267)
+
