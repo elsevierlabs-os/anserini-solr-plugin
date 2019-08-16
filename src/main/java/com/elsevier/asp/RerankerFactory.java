@@ -61,9 +61,16 @@ public class RerankerFactory {
 		BooleanQuery originalResultsFilter = buildResultFilter(inputs, reader);
 		rerankQueryBuilder.add(originalResultsFilter, BooleanClause.Occur.FILTER);
 
+		boolean doRestrict = (params.get("_restrict").intValue() == 1);
+
 		// retrieve reranked results from Query B
 		try {
-			TopDocs topDocs = searcher.search(rerankQueryBuilder.build(), inputs.length);
+			TopDocs topDocs = null;
+			if (doRestrict) {
+				topDocs = searcher.search(rerankQueryBuilder.build(), inputs.length);	
+			} else {
+				topDocs = searcher.search(queryBuilder.build(), inputs.length);
+			}
 			return new RerankedResult(queryBuilder.build(), topDocs.scoreDocs);
 		} catch (IOException e) {
 			e.printStackTrace();
