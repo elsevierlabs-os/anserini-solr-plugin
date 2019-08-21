@@ -75,7 +75,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 		RerankerFactory rf = new RerankerFactory();
 		Map<String,Float> params = new HashMap<String,Float>();
 		// :HACK: to allow testing ANSERINI-422
-		params.put("_restrict", req.getParams().getBool("_restrict") ? 1.0F: 0.0F);
+		params.put("_restrict", req.getParams().getBool("_restrict", false) ? 1.0F: 0.0F);
 		if ("rm3".equals(rtype)) {       // "rm3"
 			params.put("fbTerms", Float.valueOf(req.getParams().get("rm3.fbTerms", "10")));
 			params.put("fbDocs", Float.valueOf(req.getParams().get("rm3.fbDocs", "10")));
