@@ -98,15 +98,32 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 			int fbTerms = Integer.valueOf(req.getParams().get("rm3.fbTerms", "10"));
 			int fbDocs = Integer.valueOf(req.getParams().get("rm3.fbDocs", "10"));
 			float originalQueryWeight = Float.valueOf(req.getParams().get("rm3.originalQueryWeight", "0.5"));
-			cascade.add(new Rm3Reranker(analyzer, fieldName, fbTerms, fbDocs, originalQueryWeight, true));
+			cascade.add(new Rm3Reranker(
+					analyzer, 
+					fieldName, 
+					fbTerms, 
+					fbDocs, 
+					originalQueryWeight, 
+					true));
 		} else if ("ax".equals(rtype)) { // "ax" -- axiomatic
 			int R = Integer.valueOf(req.getParams().get("ax.R", "20"));
 			int N = Integer.valueOf(req.getParams().get("ax.N", "20"));
 			int K = Integer.valueOf(req.getParams().get("ax.K", "1000"));
 			int M = Integer.valueOf(req.getParams().get("ax.M", "30"));
 			float beta = Float.valueOf(req.getParams().get("ax.beta", "0.4"));
-			cascade.add(new AxiomReranker<>(null, null, fieldName, true, (long) M, R, N, beta, K, 
-					(String) null, false, false));
+			cascade.add(new AxiomReranker<>(
+					null,      // original index path (not used?) 
+					null,      // external index path (definitely not used here)
+					fieldName, // field name to search on
+					false,     // deterministic == false => internal/external cache == null
+					0L,        // seed (not used, since random number generated internally
+					R,         // number of top docs from initial results to use 
+					N,         // pad with (N-1)*R random docs from index 
+					beta,      // scaling factor
+					K,         // top similar items
+					null,      // doc ids cache path, don't build since non-deterministic 
+					false,     // output the query (TODO: need another mechanism)
+					false));   // searchTweets -- hack, not applicable here
 		} else { // "id"
 			cascade.add(new IdentityReranker());
 		}
