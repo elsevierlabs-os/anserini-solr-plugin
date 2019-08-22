@@ -1,5 +1,6 @@
 package com.elsevier.asp;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -8,7 +9,12 @@ import java.util.Map.Entry;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -163,10 +169,10 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 			}
 			SolrDocument oDoc = new SolrDocument();
 			for (String fieldElementName : fieldList) {
-				if (! "para_text".equals(fieldElementName)) {
+				if (! textField.equals(fieldElementName)) {
 					oDoc.addField(fieldElementName, idoc.get(fieldElementName));
 				} else {
-					oDoc.addField("para_text", idoc.getFields(fieldName)[0]);
+					oDoc.addField(textField, idoc.getFields(fieldName)[0]);
 				}
 			}
 			doclist.add(oDoc);
@@ -202,6 +208,12 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 	}
 	
 	private Query buildQueryFilter(ScoredDocuments baseResults) {
-		return null;
+		// filter to filter results from queryB to the ones returned by queryA
+		BooleanQuery.Builder filterBuilder = new BooleanQuery.Builder();
+		for (Document doc : baseResults.documents) {
+				String id = doc.get("id");
+				filterBuilder.add(new TermQuery(new Term("id", id)), BooleanClause.Occur.SHOULD);
+		}
+		return filterBuilder.build();
 	}
 }
