@@ -4,6 +4,7 @@ curl -X POST -H 'Content-type:application/json' http://localhost:8983/solr/qaind
     "name": "/anserini",
     "class": "com.elsevier.asp.AnseriniRequestHandler",
     "defaults": {
+        "tf"                        : "para_text",
         "sim"                       : "bm",
         "qtype"                     : "bow",
         "rtype"                     : "rm3",
