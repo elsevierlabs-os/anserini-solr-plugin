@@ -130,6 +130,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 					oDoc.addField("para_text", idoc.getFields(fieldName)[0]);
 				}
 			}
+			oDoc.addField("score", scoreDoc.score);
 			doclist.add(oDoc);
 			currDoc++;
 			if (currDoc >= start + rows) break;
