@@ -192,6 +192,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 					oDoc.addField(textField, idoc.getFields(fieldName)[0]);
 				}
 			}
+			oDoc.addField("score", rerankedResults.scores[currDoc]);
 			doclist.add(oDoc);
 			currDoc++;
 			if (currDoc >= start + rows) break;
