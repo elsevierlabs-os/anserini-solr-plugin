@@ -109,7 +109,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 			int R = Integer.valueOf(req.getParams().get("ax.R", "20"));
 			int N = Integer.valueOf(req.getParams().get("ax.N", "20"));
 			int K = Integer.valueOf(req.getParams().get("ax.K", "1000"));
-			int M = Integer.valueOf(req.getParams().get("ax.M", "30"));
+//			int M = Integer.valueOf(req.getParams().get("ax.M", "30"));
 			float beta = Float.valueOf(req.getParams().get("ax.beta", "0.4"));
 			cascade.add(new AxiomReranker<>(
 					null,      // original index path (not used?) 
