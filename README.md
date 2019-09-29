@@ -52,7 +52,7 @@ Main parameters to tweak behavior are listed below.
 
 * q -- question, URL encoded. Mandatory parameter.
 * sim -- ql (Query Likelihood) or bm (BM25), default bm.
-* qtyoe -- Query Expansion type. Valid values are bow (Bag of Words) or sdm (Sequential Dependency Model), default is bow.
+* qtype -- Query Expansion type. Valid values are bow (Bag of Words) or sdm (Sequential Dependency Model), default is bow.
 * rtype -- Reranking type. Valid values are ax (Axiomatic), rm3 (Relevance Model 3), and id (Identity), default is rm3.
 * start and rows -- for pagination, defaults to 0 and 10 respectively.
 
@@ -68,7 +68,7 @@ Currently the only dependency is Solr, since we have copy-pasted relevant parts 
 
 If you need to cite this software in your own work, please use the following DOI.
 
-Pal, Sujit (2015), Elsevier Labs. Anserini Solr Plugin [Computer Software]; [https://github.com/elsevierlabs-os/anserini-solr-plugin](https://github.com/elsevierlabs-os/anserini-solr-plugin).
+Pal, Sujit (2019), Elsevier Labs. Anserini Solr Plugin [Computer Software]; [https://github.com/elsevierlabs-os/anserini-solr-plugin](https://github.com/elsevierlabs-os/anserini-solr-plugin).
 
 
 [![DOI](https://zenodo.org/badge/202418267.svg)](https://zenodo.org/badge/latestdoi/202418267)
