@@ -163,12 +163,12 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 			requestParams.put(e.getKey(), e.getValue()[0]);
 		}
 		header.add("params", requestParams);
-		header.add("query_a", query);
+		header.add("query_a", query.toString());
 
 		// TODO: need to expose the query_b from the RerankerCascade[0].reranker
 		// TODO: need to find a better way of reporting errors from reranking 
 		// (or other steps)
-//		header.add("query_b", rerankedResults.getQuery());
+//		header.add("query_b", rerankedResults.getQuery().toString());
 //		if (rerankedResults.getErrorMessage() != null) {
 //			header.add("error_message", rerankedResults.getErrorMessage());
 //		}
