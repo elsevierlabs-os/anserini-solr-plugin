@@ -48,6 +48,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 		
 		// step 1: extract parameters from request
 		String q = req.getParams().get("q");
+		String[] fqs = req.getParams().getParams("fq");
 		String textField = req.getParams().get("tf", "para_text");
 		String similarity = req.getParams().get("sim", "bm");  // [bm, ql]
 		String qtype = req.getParams().get("qtype", "bow");    // [bow, sdm]
@@ -69,6 +70,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 			query = new SdmQueryGenerator(termWeight, orderedWindowWeight, unorderedWindowWeight)
 					.buildQuery(fieldName, analyzer, q);
 		}
+		query = applyFilters(query, fqs);
 		
 		// step 4: execute query A and get results
 		SolrIndexSearcher searcher = req.getSearcher();
@@ -223,6 +225,21 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 //		doclist.setNumFound(numFound);
 //		doclist.setStart(start);
 //		resp.add("docs", doclist);
+	}
+	
+	private Query applyFilters(Query query, String[] filters) {
+		if (filters == null || filters.length == 0) return query;
+		BooleanQuery.Builder filterBuilder = new BooleanQuery.Builder();
+		for (String nvp : filters) {
+			System.out.println("nvp=" + nvp);
+			String[] nvpElements = nvp.split(":");
+			filterBuilder.add(new TermQuery(new Term(nvpElements[0], nvpElements[1])), 
+					BooleanClause.Occur.SHOULD);
+		}
+		BooleanQuery.Builder filteredQueryBuilder = new BooleanQuery.Builder();
+		filteredQueryBuilder.add(query, BooleanClause.Occur.MUST);
+		filteredQueryBuilder.add(filterBuilder.build(), BooleanClause.Occur.FILTER);
+		return filteredQueryBuilder.build();		
 	}
 	
 	private Query buildQueryFilter(ScoredDocuments baseResults) {
