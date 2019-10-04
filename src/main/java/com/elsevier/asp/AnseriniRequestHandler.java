@@ -33,6 +33,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 		
 		// step 1: extract parameters from request
 		String q = req.getParams().get("q");
+		String[] fq = req.getParams().getParams("fq");
 		String similarity = req.getParams().get("sim", "bm");  // [bm, ql]
 		String qtype = req.getParams().get("qtype", "bow");    // [bow, sdm]
 		String rtype = req.getParams().get("rtype", "rm3");    // [rm3, ax, id]
@@ -46,7 +47,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 		QueryBuilderFactory qbf = new QueryBuilderFactory();
 		Query query = null;
 		if ("bow".equals(qtype)) { // "bow"
-			query = qbf.buildBagOfWordsQuery(q, fieldName, analyzer);
+			query = qbf.buildBagOfWordsQuery(q, fq, fieldName, analyzer);
 		} else {                   // "sdm"
 			Map<String,Float> params = new HashMap<String,Float>();
 			params.put("termWeight", 
@@ -55,7 +56,7 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 					Float.valueOf(req.getParams().get("sdm.orderedWindowWeight", "0.1")));
 			params.put("unorderedWindowWeight",
 					Float.valueOf(req.getParams().get("sdm.unorderedWindowWeight", "0.05")));
-			query = qbf.buildSeqDepModelQuery(q, fieldName, analyzer, params);
+			query = qbf.buildSeqDepModelQuery(q, fq, fieldName, analyzer, params);
 		}
 		
 		// step 4: analyze results of query A and build query B

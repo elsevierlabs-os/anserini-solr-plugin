@@ -14,20 +14,20 @@ import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 
-
 public class QueryBuilderFactory {
 	
-	public Query buildBagOfWordsQuery(String queryString, String fieldName, Analyzer analyzer) {
+	public Query buildBagOfWordsQuery(String queryString, String[] filters, 
+			String fieldName, Analyzer analyzer) {
 		List<String> tokens = AnalyzerUtils.tokenizeQuery(queryString, fieldName, analyzer);
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		for (String token : tokens) {
 			builder.add(new TermQuery(new Term(fieldName, token)), BooleanClause.Occur.SHOULD);
 		}
-		return builder.build();
+		return applyFilters(builder.build(), filters);
 	}
 	
-	public Query buildSeqDepModelQuery(String queryString, String fieldName, 
-			Analyzer analyzer, Map<String,Float> params) {
+	public Query buildSeqDepModelQuery(String queryString, String[] filters, 
+			String fieldName, Analyzer analyzer, Map<String,Float> params) {
 		List<String> tokens = AnalyzerUtils.tokenizeQuery(queryString, fieldName, analyzer);
 		// terms component
 		BooleanQuery.Builder termsBuilder = new BooleanQuery.Builder();
@@ -57,6 +57,21 @@ public class QueryBuilderFactory {
 				params.get("orderedWindowWeight")), BooleanClause.Occur.SHOULD);
 		builder.add(new BoostQuery(unorderedWindowBuilder.build(),
 				params.get("unorderedWindowWeight")), BooleanClause.Occur.SHOULD);
-		return builder.build();
+		return applyFilters(builder.build(), filters);
+	}
+	
+	private Query applyFilters(Query query, String[] filters) {
+		if (filters == null || filters.length == 0) return query;
+		BooleanQuery.Builder filterBuilder = new BooleanQuery.Builder();
+		for (String nvp : filters) {
+			System.out.println("nvp=" + nvp);
+			String[] nvpElements = nvp.split(":");
+			filterBuilder.add(new TermQuery(new Term(nvpElements[0], nvpElements[1])), 
+					BooleanClause.Occur.SHOULD);
+		}
+		BooleanQuery.Builder filteredQueryBuilder = new BooleanQuery.Builder();
+		filteredQueryBuilder.add(query, BooleanClause.Occur.MUST);
+		filteredQueryBuilder.add(filterBuilder.build(), BooleanClause.Occur.FILTER);
+		return filteredQueryBuilder.build();
 	}
 }
