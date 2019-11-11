@@ -107,6 +107,8 @@ public class AnseriniRequestHandler extends RequestHandlerBase {
 		header.add("params", requestParams);
 		header.add("query_a", query.toString());
 		if (! rtype.equals("id")) {
+			header.add("query_b", "N/A");
+		} else {
 			header.add("query_b", rerankedResults.getQuery().toString());
 		}
 		if (rerankedResults.getErrorMessage() != null) {
